@@ -67,7 +67,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSwitchToRegister }) => {
         <div className="mt-6 text-center">
           <button
             onClick={onSwitchToRegister}
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            className="text-red-600 hover:text-blue-800 font-medium"
           >
             New student? Register here
           </button>
