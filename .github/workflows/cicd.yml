@@ -3,9 +3,10 @@ on:
   push:
     branches: [ main ]
 env:
-  DOCKER_BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/lms-backend
-  DOCKER_FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/lms-frontend
-  REACT_APP_API_URL: http://${{ secrets.SERVER_IP }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_BACKEND_IMAGE: "${{ secrets.DOCKER_USERNAME }}/lms-backend"
+  DOCKER_FRONTEND_IMAGE: "${{ secrets.DOCKER_USERNAME }}/lms-frontend"
+  REACT_APP_API_URL: "http://${{ secrets.SERVER_IP }}"
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -28,8 +29,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           no-cache: true
-          tags: ${{ env.DOCKER_BACKEND_IMAGE }}:2.0.0 ${{ env.DOCKER_BACKEND_IMAGE }}:${{ github.sha }}
-          cache-from: type=registry,ref=${{ env.DOCKER_BACKEND_IMAGE}}:2.0.0
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/lms-backend:2.0.0
+            ${{ env.DOCKER_USERNAME }}/lms-backend:${{ github.sha }}
+          cache-from: type=registry,ref=${{ env.DOCKER_USERNAME }}/lms-backend:2.0.0
           cache-to: type=inline
       - name: Build and push frontend image
         uses: docker/build-push-action@v5
@@ -39,8 +42,10 @@ jobs:
           push: true
           no-cache: true
           build-args: REACT_APP_API_URL=${{ env.REACT_APP_API_URL }}
-          tags: ${{ env.DOCKER_FRONTEND_IMAGE }}:2.0.0 ${{ env.DOCKER_FRONTEND_IMAGE }}:${{ github.sha }}
-          cache-from: type=registry,ref=${{ env.DOCKER_FRONTEND_IMAGE}}:2.0.0
+          tags: |
+            ${{ env.DOCKER_USERNAME }}/lms-frontend:2.0.0
+            ${{ env.DOCKER_USERNAME }}/lms-frontend:${{ github.sha }}
+          cache-from: type=registry,ref=${{ env.DOCKER_USERNAME }}/lms-frontend:2.0.0
           cache-to: type=inline
   deploy:
     needs: build-and-push
